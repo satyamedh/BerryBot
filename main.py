@@ -42,7 +42,7 @@ except Exception:
     meme_webhooks = []
 
 bot_name = 'BerryBot'
-bot_version = 'beta 2.0'
+bot_version = 'beta 3.0(after a desatorous deletion of files(phew I recovered them tho))'
 
 reddit = praw.Reddit(client_id='ecrTQ_N49JRNIw',
                      client_secret='LzWTxvRugZTGVDL6SeeMsSH0yqE',
