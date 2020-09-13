@@ -1706,50 +1706,6 @@ async def search(ctx, platform=None, results_no: int = None, *, search_keywords=
 
 
 
-@bot.command(aliases=['ujoin', 'unojoin', 'u_join'])
-async def uno_join(ctx):
-    list_of_players = []
-    config = {'cards': 7, 'mystery_card': True, 'auto_challenge': False, 'pass-allowed': False,
-              'draw-keep-in-same-chance': False, 'dms': False, 'challenges': True}
-    if os.path.isfile(f'data/uno/{ctx.guild.id}.pkl'):
-        list_of_players = pickle.load(open(f'data/uno/{ctx.guild.id}.pkl', 'rb'))
-        config = pickle.load(open(f'data/uno/{ctx.guild.id}_config.pkl', 'rb'))
-    list_of_players.append(ctx.author.id)
-    pickle.dump(list_of_players, open(f'data/uno/{ctx.guild.id}.pkl', 'wb'))
-    pickle.dump(config, open(f'data/uno/{ctx.guild.id}_config.pkl', 'wb'))
-    final_desc = '(leader)'
-    for player in list_of_players:
-        final_desc = final_desc + '\n`' + bot.get_user(player).display_name + '`'
-    embed = discord.Embed(title="Uno! Heres the current players in this server!", description=final_desc + 'Thats you!')
-    file = discord.File("sources/uno/thumbnail.png", filename="unothumbnail.png")
-    embed.set_thumbnail(url='attachment://unothumbnail.png')
-    embed.set_image(url='attachment://unothumbnail.png')
-    await ctx.send(file=file, embed=embed)
-
-
-@bot.command(aliases=['uconfig', 'unoconfig', 'u_config'])
-async def uno_config(ctx, config, value):
-    if not os.path.isfile(f'data/uno/{ctx.guild.id}_config.pkl'):
-        await ctx.send('bruh no game goin on, get da party on boiis!')
-        return
-    config1 = pickle.load(open(f'data/uno/{ctx.guild.id}_config.pkl', 'rb'))
-    # try:
-    config1.get(config)
-    # except KeyError:
-    await ctx.send('unknown config. Here are the configs: \n `cards`: no. of cards for each person. max 20 '
-                   '||Default: 7||\n `mystery_card`: Have a chance to get a \" Mystery \" card. when you use it a '
-                   'random card appears into the deck and the card is used. ||Default: on||\n `auto-challenge`: '
-                   'Automatically challenges user if he didnt respond `UNO!` in chat within 5 seconds of him '
-                   'having a single card in his/her deck. ||Default: off|| \n `pass-allowed`: Allow passing of '
-                   'turns without actually drawing a card. ||Default: off|| \n `draw-keep-same-chance`: allow '
-                   'drawing and using a card in the same chance ||Default: off|| \n `dms`: Dms the user instead '
-                   'of making a channel for them. There will still be a default channel to challenge, '
-                   'try guess cards etc.. This is recommended if u have admin playing as they will be able to see '
-                   'your deck. The bot will send you a friend request if you have dms off.||Default: off|| \n '
-                   '`challenges`: Allows to challenge a user(gives them 4 cards if they didnt say \" UNO! \" in '
-                   'the chat after the have only 1 card left) ||Default: on||')
-
-
 @bot.command()
 async def startspam(ctx, no: int):
     for i in range(no):
