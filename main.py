@@ -1086,9 +1086,7 @@ async def suggest(ctx, *suggestionlist):
                               'name will be included in the footer and you will recieve 1mil in currecy, this bounty will be '
                               'raised and lowered according to the needs :P')
     embed.set_footer(text=f'Thanks {bot.get_user(730236982537486395).display_name} for reporting empty suggestion bug!')
-    await ctx.send(embed)
-
-
+    await ctx.send(embed=embed)
 @bot.command(aliases=['dc'])
 async def decancer(ctx, member: discord.Member = None):
     if member is None:
