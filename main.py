@@ -14,10 +14,6 @@ Before you get started: you will have to read these guidelines:
 
 '''
 
-
-
-
-
 import asyncio
 import re
 import string
@@ -197,8 +193,6 @@ async def kick(ctx, user: discord.Member, *, reason=None):
     await user.send(f'You have been kicked from {ctx.guild.name}  for{final_reason}')
     await user.kick()
     await ctx.send(f'done! bye bye {user.mention}')
-
-
 
 
 @bot.command()
@@ -801,9 +795,9 @@ async def on_message(msg):
             if row[0] == 'afk':
                 c.execute('DELETE FROM config WHERE param=?', ('afk',))
                 db.commit()
-                await msg.channel.send(f'Welcome back {msg.author.mention}! I removed your afk!')
+                msg2 = await msg.channel.send(f'Welcome back {msg.author.mention}! I removed your afk!')
                 await asyncio.sleep(5)
-                await msg.delete()
+                await msg2.delete()
                 await bot.process_commands(msg)
                 return
         try:
@@ -1624,7 +1618,8 @@ async def search(ctx, platform=None, results_no: int = None, *, search_keywords=
             resp = requests.get(j)
             soup = BeautifulSoup(resp.text)
             metas = soup.find_all('meta')
-            desc = [meta.attrs['content'] for meta in metas if 'name' in meta.attrs and meta.attrs['name'] == 'description']
+            desc = [meta.attrs['content'] for meta in metas if
+                    'name' in meta.attrs and meta.attrs['name'] == 'description']
             try:
                 desc[0]
             except IndexError:
@@ -1635,9 +1630,9 @@ async def search(ctx, platform=None, results_no: int = None, *, search_keywords=
                 embed.set_thumbnail(url=favicon.get(j)[1].url)
             except IndexError:
                 embed.set_image(url='https://res.cloudinary.com/dste7lzp4/image/upload/v1599930162/Untitled_dkde04.png')
-                embed.set_thumbnail(url='https://res.cloudinary.com/dste7lzp4/image/upload/v1599930162/Untitled_dkde04.png')
+                embed.set_thumbnail(
+                    url='https://res.cloudinary.com/dste7lzp4/image/upload/v1599930162/Untitled_dkde04.png')
             await ctx.send(embed=embed)
-
 
 
 @bot.command()
@@ -1684,7 +1679,6 @@ async def unban_me(ctx, id13: int = None):
     await ctx.send(f'done!. invite link: {invite.url}')
 
 
-
 @bot.command()
 async def startspam(ctx, no: int):
     for i in range(no):
@@ -1703,7 +1697,6 @@ async def reset_nicks(ctx):
             pass
         await ctx.send(f'`{prevnick}` was changed to `{member.display_name}`')
     await ctx.send('**done!**')
-
 
 
 @bot.command()
@@ -1733,35 +1726,17 @@ async def gstart(ctx, duration=None, winners=None, *, item=None):
 
 @tasks.loop(minutes=2)
 async def status_change():
-    listo = ['list', 'watch', 'play']
+    listo = [discord.Activity(type=discord.ActivityType.listening, name='to my commands'),
+             discord.Activity(type=discord.ActivityType.watching, name='YOU               jk no, my commands'),
+             discord.Game(name='with my commands')]
     rand = random.choice(listo)
-    listo2 = ['moble', 'dnd', 'idle']
+    listo2 = [discord.Status.online, discord.Status.dnd, discord.Status.idle]
     rand2 = random.choice(listo2)
-    if rand == 'play':
-        if rand2 == 'moble':
-            await bot.change_presence(activity=discord.Game(name='with my commands'), status=discord.Status.online)
-        elif rand2 == 'dnd':
-            await bot.change_presence(activity=discord.Game(name='with my commands'), status=discord.Status.dnd)
-        elif rand2 == 'idle':
-            await bot.change_presence(activity=discord.Game(name='with my commands'), status=discord.Status.idle)
-    elif rand == 'watch':
-        if rand2 == 'moble':
-            await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name='YOU               jk no, my commands'), status=discord.Status.online)
-        elif rand2 == 'dnd':
-            await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name='YOU               jk no, my commands'), status=discord.Status.dnd)
-        elif rand2 == 'idle':
-            await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name='YOU               jk no, my commands'), status=discord.Status.idle)
-    elif rand == 'list':
-        if rand2 == 'moble':
-            await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name='to my commands'), status=discord.Status.online)
-        elif rand2 == 'dnd':
-            await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name='to my commands'), status=discord.Status.dnd)
-        elif rand2 == 'idle':
-            await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name='to my commands'), status=discord.Status.idle)
+    await bot.change_presence(activity=rand, status=rand2)
 
 
 @bot.command()
-async def dmmsg(ctx, user: discord.Member=None, *, msg=None):
+async def dmmsg(ctx, user: discord.Member = None, *, msg=None):
     fstr = ''
     for i in msg:
         fstr = f'{fstr} {i}'
@@ -1769,20 +1744,17 @@ async def dmmsg(ctx, user: discord.Member=None, *, msg=None):
     await ctx.send('done!')
 
 
+# @bot.command(aliases=['bal'])
+# async def balance(ctx, user: discord.Member=None):
+# if user is None:
+# user = ctx.author
+# if not os.path.isfile(f'data/users/{ctx.author.id}_currency.pkl'):
 
-#@bot.command(aliases=['bal'])
-#async def balance(ctx, user: discord.Member=None):
-    #if user is None:
-        #user = ctx.author
-    #if not os.path.isfile(f'data/users/{ctx.author.id}_currency.pkl'):
-        #embed = Embed(title='ayy welcome to berrybot! This is dank memer for the banned. do you think dank memer '
-        #                    'banned you for no reason like they did to me? welp here you go! This is a (almost) '
-        #                    'duplicate of dank memer. I will try and keep it up to date. anyway have fun with a 20k '
-        #                    'welcome reward! ps: this isnt focused on ')
 
 @bot.event
 async def on_ready():
     status_change.start()
+
 
 token = open("token.txt")
 bot.run(token.read())
