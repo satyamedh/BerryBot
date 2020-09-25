@@ -1066,7 +1066,7 @@ async def suggest(ctx, *suggestionlist):
     fsuggestion = ''
     for suggestion in suggestionlist:
         fsuggestion = fsuggestion + ' ' + suggestion
-    if fsuggestion.isEmpty():
+    if fsuggestion == '':
         await ctx.send(
             f'wowow! what a useless and empty suggestion! \n\n Thanks {bot.get_user(730236982537486395).display_name} for telling dis bug!')
         return
