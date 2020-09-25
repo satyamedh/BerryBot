@@ -11,3 +11,10 @@ Hello! This is the source code of the bot name BerryBot. I have coded this. befo
 
 
 my discord uname: ! ||Satyamedh||#9549
+
+
+# To-Do!
+1. Seperate all commands into cogs and into different files
+2. finish currency
+
+Thats all for now! suggest stuff pwees!
