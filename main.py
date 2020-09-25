@@ -1066,6 +1066,10 @@ async def suggest(ctx, *suggestionlist):
     fsuggestion = ''
     for suggestion in suggestionlist:
         fsuggestion = fsuggestion + ' ' + suggestion
+    if fsuggestion.isEmpty():
+        await ctx.send(
+            f'wowow! what a useless and empty suggestion! \n\n Thanks {bot.get_user(730236982537486395).display_name} for telling dis bug!')
+        return
     diplayname = ctx.author.display_name
     diplayname = ''.join(c for c in diplayname if c in valid_chars)
     lol = random.randint(1, 99999999)
@@ -1077,9 +1081,12 @@ async def suggest(ctx, *suggestionlist):
     file.close()
     file = open(f'data/suggestions/{diplayname}/{lol}.txt', 'w')
     file.write(fsuggestion)
-    await ctx.send('Your suggestion has been saved, thanks for your support. if your suggestion gets implemented your '
-                   'name will be included in the footer and you will recieve 1mil in currecy, this bounty will be '
-                   'raised and lowered according to the needs :P')
+    embed = Embed(title='Suggestion Recorded',
+                  description='Your suggestion has been saved, thanks for your support. if your suggestion gets implemented your '
+                              'name will be included in the footer and you will recieve 1mil in currecy, this bounty will be '
+                              'raised and lowered according to the needs :P')
+    embed.set_footer(text=f'Thanks {bot.get_user(730236982537486395).display_name} for reporting empty suggestion bug!')
+    await ctx.send(embed)
 
 
 @bot.command(aliases=['dc'])
