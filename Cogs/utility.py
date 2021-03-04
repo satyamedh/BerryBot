@@ -34,13 +34,15 @@ class UtilCog(commands.Cog):
             return
 
         if results_no is None:
-            await ctx.send('lol ok, heres the syntax: `hey search [youtube|google, sugggest more using `{prefix}suggesest`] '
-                           '<no of results, max 20> (keywords)`')
+            await ctx.send(
+                'lol ok, heres the syntax: `hey search [youtube|google, sugggest more using `{prefix}suggesest`] '
+                '<no of results, max 20> (keywords)`')
             return
         if search_keywords is None:
-            await ctx.send(f'LOL Tell me search keywords to search for \U0001f923, ' + 'lol ok, heres the syntax: `{prefix}'
-                                                                                       'search [youtube|google] <no of '
-                                                                                       'results, max 20> (keywords)`')
+            await ctx.send(
+                f'LOL Tell me search keywords to search for \U0001f923, ' + 'lol ok, heres the syntax: `{prefix}'
+                                                                            'search [youtube|google] <no of '
+                                                                            'results, max 20> (keywords)`')
             return
         if platform == 'youtube':
             fstr = ''
@@ -101,6 +103,32 @@ class UtilCog(commands.Cog):
                     embed.set_thumbnail(
                         url='https://res.cloudinary.com/dste7lzp4/image/upload/v1599930162/Untitled_dkde04.png')
                 await ctx.send(embed=embed)
+
+    @commands.command(aliases=['source', 'source-code', 'sourcecode'])
+    async def github(self, ctx):
+        await ctx.send(
+            'I see, you wanna see the source, okay so 1st promise that you will not misuse the source code, you will have to read this licence: http://bit.ly/gnuafferolicence (yes it is a link shortner, dont worry, no ads, it just counts clicks).')
+        await asyncio.sleep(5)
+        await ctx.send(
+            'Send this in this channel to promise you wont misuse: `I HEREBY AGREE THAT I WILL NOT MISUSE THE SOURCE CODE, AND WILL NOT SELF-HOST THE BOT EVEN IF I UNDERSTAND HOW IT WORKS`')
+
+        def check(msg):
+            return msg.author.id == ctx.author.id
+
+        try:
+            msg = await self.bot.wait_for('message', timeout=5.5, check=check)
+        except asyncio.TimeoutError:
+            await ctx.send('Timeout!')
+            return
+        else:
+            if msg.content == 'I HEREBY AGREE THAT I WILL NOT MISUSE THE SOURCE CODE, AND WILL NOT SELF-HOST THE BOT EVEN IF I UNDERSTAND HOW IT WORKS':
+                await ctx.send(
+                    'good boye, heres the code: http://bit.ly/BerryBotSourceCode (yes it is a link shortner, dont worry, no ads, it just counts clicks).')
+                return
+            else:
+                await ctx.send('you didnt AGREE so no source code for you!')
+                return
+
 
 def setup(bot):
     bot.add_cog(UtilCog(bot))
