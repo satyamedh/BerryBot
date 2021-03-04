@@ -11,3 +11,7 @@ Hello! This is the source code of the bot name BerryBot. I have coded this. befo
 
 
 my discord uname: ! ||Satyamedh||#9549
+
+# Da team!
+1. ! ||Satyamedh||#1051
+2. Zapdos#0007
