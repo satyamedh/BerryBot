@@ -20,7 +20,7 @@ class UtilCog(commands.Cog):
         self.bot = bot
         self.datadir = str(pathlib.Path(__file__).parent.absolute()) + "/data"
 
-    @commands.command()
+    # @commands.command()
     async def search(self, ctx, platform=None, results_no: int = None, *, search_keywords=None):
         if platform is None:
             await ctx.send(
