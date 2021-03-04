@@ -1,0 +1,10 @@
+discord.py==1.5.1
+num2words
+praw
+requirements
+mechanize
+favicon
+ytpy
+google
+beautifulsoup4
+unicodedata2
