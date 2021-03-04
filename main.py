@@ -1702,10 +1702,6 @@ async def search(ctx, platform=None, results_no: int = None, *, search_keywords=
 
 
 
-@bot.command()
-async def startspam(ctx, no: int):
-    for i in range(no):
-        await ctx.send(i)
 
 
 token = open("token.txt")
