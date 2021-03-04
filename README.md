@@ -7,8 +7,6 @@ Hello! This is the source code of the bot name BerryBot. I have coded this. befo
 2. Please open issues for bug reports and feature requests
 3. Pull requests are open! devs please optimise the bot if you can!
 
-my discord uname: ! ||Satyamedh||#9549
-
 # Da team!
 1. ! ||Satyamedh||#1051
 2. Zapdos#0007
