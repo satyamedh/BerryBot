@@ -1,7 +1,5 @@
 import asyncio
 import re
-import string
-import unicodedata
 import aiohttp
 import discord
 from discord.ext import commands
@@ -61,8 +59,6 @@ for i in extlist:
 
 @bot.command()
 async def help(ctx, category=None):
-    random_number = random.randint(0, 16777215)
-    hex_number = str(hex(random_number))
     try:
         category = category.lower()
     except AttributeError:
