@@ -143,23 +143,6 @@ async def help(ctx, category=None):
         await ctx.send(embed=embedVar)
 
 
-@bot.command()
-@commands.has_permissions(ban_members=True)
-async def ban(ctx, user: discord.User, reason=None):
-    try:
-        log_channel = open(f'data/server_data/{ctx.guild.id}/settings/log_channel.txt')
-        ch = await bot.fetch_channel(log_channel.read())
-        Embedvar = discord.Embed(title='Member Banned', description=f'Member Named `{user.display_name}` was banned. '
-                                                                    f'action taken by {ctx.author.display_name}. '
-                                                                    f'Reason: `{reason}`')
-        log_channel.close()
-        await ch.send(embed=Embedvar)
-    except Exception as e:
-        ctx.send('Either That user isnt bannable, or you havent set up the server. do `hey setup` and try again. if '
-                 'it still wont work that person is immune to me \U0001f440 ')
-    await ctx.send(f"{user.mention} has been banned woo, reason:{reason})    https://www.tenor.com/bfuQS.gif")
-    await ctx.guild.ban(user, reason=reason, delete_message_days=0)
-    await user.send(f"U were were BANNED FROM {ctx.guild.name} for {reason}, bye bye")
 
 
 @bot.command()
