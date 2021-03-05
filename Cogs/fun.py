@@ -1,6 +1,8 @@
 import random
 import discord
 import asyncio
+
+import requests
 from discord.ext import commands
 
 
@@ -50,6 +52,11 @@ class FunCog(commands.Cog):
                      "Umm...No.",
                      "Very doubtful."]
         await ctx.send(f'Question: {question}\nAnswer: {random.choice(responses)}')
+
+    @commands.command()
+    async def joke(self, ctx):
+        r = requests.get('https://icanhazdadjoke.com/', headers={'Accept': 'text/plain'})
+        await ctx.send(r.text)
 
 
 

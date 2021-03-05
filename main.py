@@ -286,10 +286,7 @@ async def remove(ctx, game, code):
 
 
 
-@bot.command()
-async def joke(ctx):
-    r = requests.get('https://icanhazdadjoke.com/', headers={'Accept': 'text/plain'})
-    await ctx.send(r.text)
+
 
 
 @bot.event
