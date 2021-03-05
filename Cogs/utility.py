@@ -1,3 +1,7 @@
+import string
+
+import discord
+import unicodedata
 from bs4 import BeautifulSoup
 from discord import Embed
 # import sqlite3
@@ -12,7 +16,11 @@ import requests
 from ytpy import YoutubeClient
 import asyncio
 import aiohttp
-from youtube_search import YoutubeSearch
+
+
+
+valid_chars = "-_.() %s%s" % (string.ascii_letters, string.digits)
+dc_chards = "`~!@#$%^&*()-_= .,;!?:" + string.ascii_letters + string.digits
 
 
 class UtilCog(commands.Cog):
@@ -128,6 +136,38 @@ class UtilCog(commands.Cog):
             else:
                 await ctx.send('you didnt AGREE so no source code for you!')
                 return
+
+    @commands.command(aliases=['dc'])
+    async def decancer(self, ctx, member: discord.Member = None):
+        if member is None:
+            await ctx.send('Bruh tell whome to decancer?')
+            return
+        name = member.display_name
+        olmember = member.display_name
+        name = str(unicodedata.normalize('NFKD', name).encode('ascii', 'ignore'))
+        await member.edit(nick=name)
+        name = member.display_name
+        name = ''.join(c for c in name if c in valid_chars)
+        await member.edit(nick=name[1:-1])
+        await ctx.send(f'decancered `{member.display_name}`. previously `{olmember}`')
+
+    @commands.command()
+    async def suggest(self, ctx, *suggestionlist):
+        fsuggestion = ''
+        for suggestion in suggestionlist:
+            fsuggestion = fsuggestion + ' ' + suggestion
+        diplayname = ctx.author.display_name
+        diplayname = ''.join(c for c in diplayname if c in valid_chars)
+        lol = random.randint(1, 99999999)
+        try:
+            os.makedirs(f'data/suggestions/{diplayname}/')
+        except Exception:
+            pass
+        file = open(f'data/suggestions/{diplayname}/{lol}.txt', 'x')
+        file.close()
+        file = open(f'data/suggestions/{diplayname}/{lol}.txt', 'w')
+        file.write(fsuggestion)
+        await ctx.send('Thanks for your suggestion! we will try to implement it and if it does keey your dms open from me. also you\'lle have you\'re name in the footer of the suggested command!')
 
 
 def setup(bot):

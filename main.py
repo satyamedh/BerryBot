@@ -3,9 +3,6 @@ import re
 import string
 import unicodedata
 import aiohttp
-import mechanize
-import favicon
-from bs4 import BeautifulSoup
 import discord
 from discord.ext import commands
 import pickle
@@ -13,12 +10,10 @@ import sqlite3
 import os
 from num2words import num2words
 import os.path
-from youtube_search import YoutubeSearch
 import praw
 from discord.ext import tasks
 import random
 import requests
-from googlesearch import search as gsearch
 
 prefix_list = ['l', '|', 'I']
 
@@ -37,8 +32,6 @@ async def get_prefixes(bot, message):
     #return commands.when_mentioned_or(*local_prefix_list)(bot, message)
     return prefix_list
 
-valid_chars = "-_.() %s%s" % (string.ascii_letters, string.digits)
-dc_chards = "`~!@#$%^&*()-_= .,;!?:" + string.ascii_letters + string.digits
 
 meme_image_urrals = []
 meme_scores = []
@@ -1133,43 +1126,6 @@ async def meme(ctx):
         return
     embed.set_footer(text=f'\U00002b06 {post_obj.score} | Api by reddit')
     await ctx.send(embed=embed)
-
-
-@bot.command()
-async def suggest(ctx, *suggestionlist):
-    fsuggestion = ''
-    for suggestion in suggestionlist:
-        fsuggestion = fsuggestion + ' ' + suggestion
-    diplayname = ctx.author.display_name
-    diplayname = ''.join(c for c in diplayname if c in valid_chars)
-    lol = random.randint(1, 99999999)
-    try:
-        os.makedirs(f'data/suggestions/{diplayname}/')
-    except Exception:
-        pass
-    file = open(f'data/suggestions/{diplayname}/{lol}.txt', 'x')
-    file.close()
-    file = open(f'data/suggestions/{diplayname}/{lol}.txt', 'w')
-    file.write(fsuggestion)
-    await ctx.send('Your suggestion has been saved, thanks for your support. if your suggestion gets implemented your '
-                   'name will be included in the footer and you will recieve 1mil in currecy, this bounty will be '
-                   'raised and lowered according to the needs :P')
-
-
-@bot.command(aliases=['dc'])
-async def decancer(ctx, member: discord.Member = None):
-    if member is None:
-        await ctx.send('Bruh tell whome to decancer?')
-        return
-    name = member.display_name
-    olmember = member.display_name
-    name = str(unicodedata.normalize('NFKD', name).encode('ascii', 'ignore'))
-    await member.edit(nick=name)
-    name = member.display_name
-    name = ''.join(c for c in name if c in valid_chars)
-    await member.edit(nick=name[1:-1])
-    await ctx.send(f'decancered `{member.display_name}`. previously `{olmember}`')
-
 
 
 
