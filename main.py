@@ -69,7 +69,7 @@ async def help(ctx, category=None):
         pass
     if category is None:
         embedVar = discord.Embed(title="Help", description="Help me!",
-                                 color=discord.Color(int(hex_number[2:], base=16)))
+                                 color=discord.Color.random())
         embedVar.add_field(name="Mod Commands:", value='Do `{prefix} help mod`', inline=False)
         embedVar.add_field(name="Currency/Economy Commands:", value='Do `{prefix} help eco`', inline=False)
         embedVar.add_field(name="Ticket System Commands:", value='Do `{prefix} help ticket`', inline=False)
@@ -84,7 +84,7 @@ async def help(ctx, category=None):
         embedVar = discord.Embed(title="Mod Commands! Do `{prefix} help (command)` for more info on a command",
                                  description="`ban`, `kick`, `warn`, `purge`, `nuke`, `mute`, `unmute`, `lock`, "
                                              "`unlock` suggets me stuff pwees(`hey suggest`)",
-                                 color=discord.Color(int(hex_number[2:], base=16)))
+                                 color=discord.Color.random())
         await ctx.send(embed=embedVar)
 
     elif category == 'eco' or category == 'economy' or category == 'cur' or category == 'currency':
@@ -97,14 +97,14 @@ async def help(ctx, category=None):
                                              '<@270904126974590976> At this point of time, that\'s cuz I had no Idea '
                                              '\U0001f604, I wont copy you Melmsie, it is just for now, I will change '
                                              'it whenever I get A Idea \U0001f642 suggets me stuff pwees(`hey suggest`)',
-                                 color=discord.Color(int(hex_number[2:], base=16)))
+                                 color=discord.Color.random())
         await ctx.send(embed=embedVar)
 
     elif category == 'ticket':
         embedVar = discord.Embed(title="Ticketing System Commands! Do `{prefix} help (command)` for more info on "
                                        "a command",
                                  description='`new`, `close` \n \n More customizableity coming soon! suggets me stuff pwees(`hey suggest`)',
-                                 color=discord.Color(int(hex_number[2:], base=16)))
+                                 color=discord.Color.random())
         await ctx.send(embed=embedVar)
 
     elif category == 'raid':
@@ -112,7 +112,7 @@ async def help(ctx, category=None):
                                        "a command",
                                  description='`deleteallchannels`, `banallembers`, `muteall`, `unmuteall`, `kickall`, '
                                              f'\n \n More commands coming soon! suggets me stuff pwees(`hey suggest`)',
-                                 color=discord.Color(int(hex_number[2:], base=16)))
+                                 color=discord.Color.random())
         await ctx.send(embed=embedVar)
 
     elif category == 'gen':
@@ -120,7 +120,7 @@ async def help(ctx, category=None):
                                        "a command",
                                  description='`add`, `gen`, `remove`, `stocks`,  \n \n More customizableity coming '
                                              'soon! suggets me stuff pwees(`hey suggest`)',
-                                 color=discord.Color(int(hex_number[2:], base=16)))
+                                 color=discord.Color.random())
         await ctx.send(embed=embedVar)
 
     elif category == 'fun':
@@ -128,7 +128,7 @@ async def help(ctx, category=None):
                                        "a command",
                                  description='`8ball`, `joke`, `meme`, `automeme`(yes automeme is free, all memes from r/dankmemes) \n \n More coming soon! do `suggest` if '
                                              'you wanna suggest a command \U0001f609',
-                                 color=discord.Color(int(hex_number[2:], base=16)))
+                                 color=discord.Color.random())
         await ctx.send(embed=embedVar)
 
     elif category == 'utility':
@@ -136,14 +136,14 @@ async def help(ctx, category=None):
                                        "a command",
                                  description='`snipe`, `editsnipe`, `help`, `ping`, `rules`, `serverinfo`, '
                                              '`userinfo`, `vote` \n \n More coming soon! do `suggest`!',
-                                 color=discord.Color(int(hex_number[2:], base=16)))
+                                 color=discord.Color.random())
         await ctx.send(embed=embedVar)
 
     elif category == 'misc':
         embedVar = discord.Embed(title="Miscellaneous Commands! Do `{prefix} help (command)` for more info on "
                                        "a command",
                                  description='`dev`, `suggest`, `invite`, `choose`, `version`,   More Later! suggets me stuff pwees(`hey suggest`)',
-                                 color=discord.Color(int(hex_number[2:], base=16)))
+                                 color=discord.Color.random())
         await ctx.send(embed=embedVar)
 
 
