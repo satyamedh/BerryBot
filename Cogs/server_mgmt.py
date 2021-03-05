@@ -433,7 +433,10 @@ class ServerMgmtCog(commands.Cog):
 
     @commands.command()
     @commands.has_permissions(ban_members=True)
-    async def ban(self, ctx, user: discord.User, *, reason=None):
+    async def ban(self, ctx, user: discord.Member, *, reason=None):
+        if not ctx.author.top_role.position > user.top_role.position:
+            await ctx.send("He has a higher role that you buddy! sorry I cant ban him!")
+            return
         fsstr = ""
         for i in reason:
             fsstr = f"{fsstr} {i}"
