@@ -14,3 +14,6 @@ Hello! This is the source code of the bot name BerryBot. I have coded this. befo
 # Mentions for honorable bug squashes
 
  -- None yet! cmon devs start making PRs!
+ 
+# Good suggestions
+ -- None yet! cmon use the suggest command!
