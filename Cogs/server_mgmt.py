@@ -538,3 +538,6 @@ class ServerMgmtCog(commands.Cog):
             else:
                 await ctx.send('aight')
 
+
+def setup(bot):
+    bot.add_cog(ServerMgmtCog(bot))

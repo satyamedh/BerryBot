@@ -58,7 +58,8 @@ class FunCog(commands.Cog):
         r = requests.get('https://icanhazdadjoke.com/', headers={'Accept': 'text/plain'})
         await ctx.send(r.text)
 
-
+def setup(bot):
+    bot.add_cog(FunCog(bot))
 
 
 
