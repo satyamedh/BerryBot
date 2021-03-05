@@ -430,3 +430,14 @@ class ServerMgmtCog(commands.Cog):
                             local_prefix_list[9] = msg3.content[1:-1]
                             pickle.dump(local_prefix_list, open(f'data/servers/{ctx.guild.id}_prefixes.pkl', 'wb'))
                             return
+
+    @commands.command()
+    @commands.has_permissions(ban_members=True)
+    async def ban(self, ctx, user: discord.User, *, reason=None):
+        fsstr = ""
+        for i in reason:
+            fsstr = f"{fsstr} {i}"
+        reason = fsstr
+        await ctx.guild.ban(user, reason=reason, delete_message_days=0)
+        await ctx.send(f"{user.mention} has been banned woo, reason:{reason})    https://www.tenor.com/bfuQS.gif")
+        await user.send(f"U were were BANNED FROM {ctx.guild.name} for {reason}, bye bye")
