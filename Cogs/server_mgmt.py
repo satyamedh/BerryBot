@@ -538,6 +538,49 @@ class ServerMgmtCog(commands.Cog):
             else:
                 await ctx.send('aight')
 
+    @commands.command()
+    @commands.has_permissions(manage_messages=True)
+    async def purge(self, ctx, user, amt: int = 5):
+        if isinstance(user, discord.Member):
+            def check(m):
+                return m.author == user
+        elif isinstance(user, str):
+            if user == "embeds":
+                def check(m):
+                    if not m.embeds:
+                        return False
+                    else:
+                        return True
+            elif user == "bots":
+                def check(m):
+                    return m.author.bot
+
+            elif user == "humans":
+
+                def check(m):
+                    if m.author.bot:
+                        return False
+                    else:
+                        return True
+            elif user.startswith("startswith"):
+                the_key = user[9:]
+
+                def check(m):
+                    if m.content.startswith(the_key):
+                        return True
+                    else:
+                        return False
+
+            elif user.startswith("endswith"):
+                the_key = user[9:]
+
+                def check(m):
+                    if m.content.endswith(the_key):
+                        return True
+                    else:
+                        return False
+        await ctx.channel.purge(check=check, limit=amt)
+
 
 def setup(bot):
     bot.add_cog(ServerMgmtCog(bot))

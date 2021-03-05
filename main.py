@@ -174,10 +174,6 @@ async def warn(ctx, user: discord.User, reason=None):
     await user.send(f"U were were warned in {ctx.guild.name} for {reason}, behave better next time, idiot")
 
 
-@bot.command()
-@commands.has_permissions(manage_messages=True)
-async def purge(ctx, n: int = 1):
-    await ctx.channel.purge(limit=n + 1)
 
 
 @bot.command()
