@@ -433,8 +433,8 @@ class ServerMgmtCog(commands.Cog):
 
     @commands.command()
     @commands.has_permissions(ban_members=True)
-    async def ban(self, ctx, user: discord.Member, *, reason=None):
-        if not ctx.author.top_role.position > user.top_role.position:
+    async def ban(self, ctx, member: discord.Member, *, reason=None):
+        if not ctx.author.top_role.position > member.top_role.position:
             await ctx.send("He has a higher role that you buddy! sorry I cant ban him!")
             return
         fsstr = ""
@@ -444,10 +444,10 @@ class ServerMgmtCog(commands.Cog):
         try:
             await member.ban(reason = reason)
         except Exception as e:
-            await ctx.send(f"Could not ban {member}! \n ERROR: {e}
+            await ctx.send(f"Could not ban {member}! \n ERROR: {e}")
             return
         await ctx.send(f"{member} has been banned woo, reason:{reason})    https://www.tenor.com/bfuQS.gif")
-        await user.send(f"U were were BANNED FROM {ctx.guild.name} for {reason}, bye bye")
+        await member.send(f"U were were BANNED FROM {ctx.guild.name} for {reason}, bye bye")
       
     @commands.command()
     @commands.has_permissions(kick_members=True)
@@ -456,18 +456,7 @@ class ServerMgmtCog(commands.Cog):
         for i in reasonarg:
             fsstr = f"{fsstr} {i}"
         reason = fsstr
-        try:
-            log_channel = open(f'data/server_data/{ctx.guild.id}/settings/log_channel.txt')
-            ch = await self.bot.get_channel(log_channel.read())
-            Embedvar = discord.Embed(title='Member Kicked', description=f'Member Named `{user}` was kicked. '
-                                                                        f'action taken by {ctx.author}. '
-                                                                        f'\n Reason: `{reason}`')
-            log_channel.close()
-            await ch.send(embed=Embedvar)
-            await ctx.send(f"{user.mention} has been kicked woo, reason:{reason})    https://tenor.com/IDX1.gif")
-            await user.kick(reason = reason)
-            await user.send(f"U were were KICKED FROM {ctx.guild.name} for {reason}, come back soon :sad:")
-        except Exception:
-            ctx.send('Either That user isnt kickable, or you havent set up the server. do `hey setup` and try again. if '
-                     'it still wont work that person is immune to me \U0001f440 ')
+        await user.kick(reason = reason)
+        await ctx.send(f"{user.mention} has been kicked woo, reason:{reason})    https://tenor.com/IDX1.gif")
+        await user.send(f"U were were KICKED FROM {ctx.guild.name} for {reason}, come back soon :sad:")
 
