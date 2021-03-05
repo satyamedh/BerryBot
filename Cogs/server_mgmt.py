@@ -442,21 +442,99 @@ class ServerMgmtCog(commands.Cog):
             fsstr = f"{fsstr} {i}"
         reason = fsstr
         try:
-            await member.ban(reason = reason)
+            await member.ban(reason=reason)
         except Exception as e:
             await ctx.send(f"Could not ban {member}! \n ERROR: {e}")
             return
         await ctx.send(f"{member} has been banned woo, reason:{reason})    https://www.tenor.com/bfuQS.gif")
         await member.send(f"U were were BANNED FROM {ctx.guild.name} for {reason}, bye bye")
-      
+
     @commands.command()
     @commands.has_permissions(kick_members=True)
-    async def kick(self,ctx, user: discord.Member, reasonarg=None):
+    async def kick(self, ctx, user: discord.Member, reasonarg=None):
         fsstr = ""
         for i in reasonarg:
             fsstr = f"{fsstr} {i}"
         reason = fsstr
-        await user.kick(reason = reason)
+        await user.kick(reason=reason)
         await ctx.send(f"{user.mention} has been kicked woo, reason:{reason})    https://tenor.com/IDX1.gif")
         await user.send(f"U were were KICKED FROM {ctx.guild.name} for {reason}, come back soon :sad:")
+
+    @commands.command()
+    @commands.has_permissions(administrator=True)
+    async def deleteallchannels(self, ctx):
+        def check(message) -> bool:
+            return ctx.author == message.author
+
+        embed = discord.Embed(title='ARE YOU FREAKING SURE?',
+                              description='ARE YOU SURE? THIS WILL DELETE ALL THE CHANNELS, VOICE CHANNELS AND '
+                                          'CATEGORIES. THIS ACTION AINT REVERSABLE @everyone')
+        await ctx.send(embed=embed)
+        try:
+            message = await self.bot.wait_for('message', timeout=5.5, check=check)
+        except asyncio.TimeoutError:
+            await ctx.send('aight, no bombing of channels today')
+        else:
+            if message.content == 'y':
+                await ctx.send('aight, server dead! @everyone IF THIS IS A RAID IMMEDIATELY CONTACT ADMINS')
+
+                channels = ctx.guild.channels
+                for i in channels:
+                    try:
+                        await i.delete()
+                    except Exception:
+                        pass
+            else:
+                await ctx.send('aight!')
+
+    @commands.command()
+    @commands.has_permissions(administrator=True)
+    async def banallmembers(self, ctx):
+        def check(message) -> bool:
+            return ctx.author == message.author
+
+        embed = discord.Embed(title='ARE YOU FREAKING SURE?',
+                              description='ARE YOU SURE? THIS WILL BAN EACH AND EVERY PERSON IT CAN. THIS ACTION AINT REVERSABLE @everyone')
+        await ctx.send(embed=embed)
+        try:
+            message = await self.bot.wait_for('message', timeout=5.5, check=check)
+        except asyncio.TimeoutError:
+            await ctx.send('aight, no bombing of server today')
+        else:
+            if message.content == 'y':
+                await ctx.send('aight, server dead! @everyone IF THIS IS A RAID CONTACT ADMINS IMMEDIATELY')
+
+                channels = ctx.guild.members
+                for i in channels:
+                    try:
+                        await i.ban()
+                    except Exception as e:
+                        pass
+            else:
+                await ctx.send('bruh, aight')
+
+    @commands.command()
+    @commands.has_permissions(administrator=True)
+    async def kickallmembers(self, ctx):
+        def check(message) -> bool:
+            return ctx.author == message.author
+
+        embed = discord.Embed(title='ARE YOU FREAKING SURE?',
+                              description='ARE YOU SURE? THIS WILL KICK EACH AND EVERY PERSON IT CAN. THIS ACTION AINT REVERSABLE @everyone')
+        await ctx.send(embed=embed)
+        try:
+            message = await self.bot.wait_for('message', timeout=5.5, check=check)
+        except asyncio.TimeoutError:
+            await ctx.send('aight, no bombing of server today')
+        else:
+            if message.content == 'y':
+                await ctx.send('aight, server dead! @everyone IF THIS IS A RAID IMMEDIATELY CONTACT STAFF')
+                channels = ctx.guild.members
+                for i in channels:
+                    try:
+                        await i.kick()
+                    except Exception as e:
+                        pass
+            else:
+                await ctx.send('aight')
 
