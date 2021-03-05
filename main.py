@@ -146,25 +146,6 @@ async def help(ctx, category=None):
 
 
 @bot.command()
-@commands.has_permissions(kick_members=True)
-async def kick(ctx, user: discord.User, reason=None):
-    try:
-        log_channel = open(f'data/server_data/{ctx.guild.id}/settings/log_channel.txt')
-        ch = await bot.fetch_channel(log_channel.read())
-        Embedvar = discord.Embed(title='Member Banned', description=f'Member Named `{user.display_name}` was kicked. '
-                                                                    f'action taken by {ctx.author.display_name}. '
-                                                                    f'\n Reason: `{reason}`')
-        log_channel.close()
-        await ch.send(embed=Embedvar)
-    except Exception as e:
-        ctx.send('Either That user isnt kickable, or you havent set up the server. do `hey setup` and try again. if '
-                 'it still wont work that person is immune to me \U0001f440 ')
-    await ctx.send(f"{user.mention} has been kicked woo, reason:{reason})    https://tenor.com/IDX1.gif")
-    await ctx.guild.kick(user, reason=reason)
-    await user.send(f"U were were KICK FROM {ctx.guild.name} for {reason}, come back soon :sad:")
-
-
-@bot.command()
 @commands.has_permissions(manage_messages=True)
 async def warn(ctx, user: discord.User, reason=None):
     global wrnno
