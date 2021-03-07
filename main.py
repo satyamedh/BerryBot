@@ -603,12 +603,6 @@ async def say(ctx, *striing):
         return
     await ctx.send(fstr)
 
-
-@bot.command()
-async def support(ctx):
-    await ctx.send('Aight! U can get help at https://discord.gg/3YT7bdw . Be sure to join!')
-
-
 @bot.event
 async def on_raw_reaction_add(payload):
     try:
