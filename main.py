@@ -888,9 +888,6 @@ async def meme_loop():
             meme_post_objects.append(post)
 
 
-
-
-
 @tasks.loop(minutes=5)
 async def actautomeme():
     random_number = random.randint(0, 16777215)
@@ -917,9 +914,19 @@ meme_loop.start()
 actautomeme.start()
 
 
+@tasks.loop(minutes=5)
+async def StatChange():
+    stats = [
+        discord.Game("Badlion Client | In a game of solo Bedwars | VICTORY | mc.hypixel.net"),
+        discord.Game("Badlion Client | Playing Hypixel Skyblock | Private Island | mc.hypixel.net"),
+        discord.Game("Badlion Client | Playing Hypixel Skyblock | Dungeons - F7 | mc.hypixel.net"),
+        discord.Game("Badlion Client | Playing Hypixel Skyblock | Bazaar alley | mc.hypixel.net"),
+        discord.Game("Badlion Client | Playing Hypixel Skyblock | Auction house | mc.hypixel.net"),
+    ]
+    await bot.change_presence(activity=random.choice(stats))
 
-
-
-
+@bot.event
+async def on_ready():
+    StatChange.start()
 
 bot.run(pickle.load(open("credentials.pkl", 'rb'))["discord"])
