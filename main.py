@@ -920,11 +920,6 @@ actautomeme.start()
 
 
 
-@bot.event
-async def on_command_error(ctx, error):
-    if isinstance(error, discord.ext.commands.CommandNotFound):
-        return
-    await report_error(ctx, error)
 
 
 bot.run(pickle.load(open("credentials.pkl", 'rb'))["discord"])
