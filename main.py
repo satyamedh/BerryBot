@@ -11,14 +11,14 @@ import os.path
 import praw
 from discord.ext import tasks
 import random
-from Cogs.common import report_error
 
 prefix_list = ['l', '|', 'I']
 
 extlist = ['jishaku',
            'Cogs.fun',
            'Cogs.utility',
-           'Cogs.server_mgmt']
+           'Cogs.server_mgmt',
+           'Cogs.ErrorHandler']
 
 
 async def get_prefixes(bot, message):
