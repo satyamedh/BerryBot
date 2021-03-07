@@ -1,9 +1,12 @@
+import pickle
 import random
 import discord
 import asyncio
 
 import requests
 from discord.ext import commands
+
+from main import meme_webhooks, meme_ids, meme_image_urrals, meme_post_objects
 
 
 class FunCog(commands.Cog):
@@ -57,6 +60,34 @@ class FunCog(commands.Cog):
     async def joke(self, ctx):
         r = requests.get('https://icanhazdadjoke.com/', headers={'Accept': 'text/plain'})
         await ctx.send(r.text)
+
+    @commands.command()
+    @commands.has_permissions(manage_guild=True)
+    async def automeme(self, ctx, channel: discord.TextChannel = None):
+        if channel is None:
+            await ctx.send('BRUH MENTION A CHANNEL!')
+            return
+        avaurl = await self.bot.user.avatar_url.read()
+        webhook = await channel.create_webhook(name="BerryBot" + ' Automeme', avatar=avaurl)
+        url = webhook.url
+        meme_webhooks.append(url)
+        pickle.dump(meme_webhooks, open('data/meme_urls.pkl', 'wb'))
+        await ctx.send('aight b, automeme setup!')
+
+    @commands.command()
+    async def meme(self, ctx):
+        random_number = random.randint(0, 16777215)
+        hex_number = str(hex(random_number))
+        ranno = random.randint(0, len(meme_ids))
+        slice1 = str(meme_image_urrals[ranno])[2:-1]
+        post_obj = meme_post_objects[ranno]
+        embed = discord.Embed(title=post_obj.title, color=int(hex_number, base=16))
+        try:
+            embed.set_image(url=slice1)
+        except IndexError:
+            return
+        embed.set_footer(text=f'\U00002b06 {post_obj.score} | Api by reddit')
+        await ctx.send(embed=embed)
 
 def setup(bot):
     bot.add_cog(FunCog(bot))

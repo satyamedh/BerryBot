@@ -11,7 +11,7 @@ import os.path
 import praw
 from discord.ext import tasks
 import random
-import requests
+from Cogs.common import report_error
 
 prefix_list = ['l', '|', 'I']
 
@@ -22,12 +22,12 @@ extlist = ['jishaku',
 
 
 async def get_prefixes(bot, message):
-    #if not os.path.isfile(f'data/servers/{message.guild.id}_prefixes.pkl'):
+    # if not os.path.isfile(f'data/servers/{message.guild.id}_prefixes.pkl'):
     #    local_prefix_list = prefix_list
     #    pickle.dump(local_prefix_list, open(f'data/servers/{message.guild.id}_prefixes.pkl', 'wb'))
-    #else:
+    # else:
     #    local_prefix_list = pickle.load(open(f'data/servers/{message.guild.id}_prefixes.pkl', 'rb'))
-    #return commands.when_mentioned_or(*local_prefix_list)(bot, message)
+    # return commands.when_mentioned_or(*local_prefix_list)(bot, message)
     return prefix_list
 
 
@@ -143,8 +143,6 @@ async def help(ctx, category=None):
         await ctx.send(embed=embedVar)
 
 
-
-
 @bot.command()
 @commands.has_permissions(manage_messages=True)
 async def warn(ctx, user: discord.User, reason=None):
@@ -172,8 +170,6 @@ async def warn(ctx, user: discord.User, reason=None):
     await ctx.send(f"{user.mention} has been WARNED woo, reason:{reason})    https://tenor.com/zKxC.gif \n This is "
                    f"his/her {wrnno} warning")
     await user.send(f"U were were warned in {ctx.guild.name} for {reason}, behave better next time, idiot")
-
-
 
 
 @bot.command()
@@ -278,11 +274,6 @@ async def remove(ctx, game, code):
         pickle.dump(data, open(f'data/stonks/{ctx.guild.id}/{game}.pkl', 'wb'))
     else:
         await ctx.send('bruh the game dosen\'t exists lolololololol')
-
-
-
-
-
 
 
 @bot.event
@@ -559,30 +550,6 @@ async def setup(ctx):
 
 @bot.command()
 @commands.has_permissions(manage_messages=True)
-async def lock(ctx):
-    try:
-        await ctx.send(f'locked {ctx.channel.mention}')
-        await ctx.channel.set_permissions(ctx.guild.default_role, send_messages=False)
-    except Exception as e:
-        embed = discord.Embed(title='ERRRRROOOOOORR! Send this to `! ||satyamedh||#9549`!',
-                              description=e)
-        await ctx.send(embed=embed)
-
-
-@bot.command()
-@commands.has_permissions(manage_messages=True)
-async def unlock(ctx):
-    try:
-        await ctx.send(f'unlocked {ctx.channel.mention}')
-        await ctx.channel.set_permissions(ctx.guild.default_role, send_messages=True)
-    except Exception as e:
-        embed = discord.Embed(title='ERRRRROOOOOORR! Send this to `! ||satyamedh||#9549`!',
-                              description=e)
-        await ctx.send(embed=embed)
-
-
-@bot.command()
-@commands.has_permissions(manage_messages=True)
 async def mute(ctx, member: discord.Member):
     try:
         conn = sqlite3.connect(f'data/servers/{ctx.guild.id}.db')
@@ -699,7 +666,7 @@ async def afk(ctx, *listReason):
     await ctx.send('Afk set!')
 
 
-#@bot.event
+# @bot.event
 async def on_message(msg):
     if os.path.isfile(f'data/users/{msg.author.id}.db'):
         db = sqlite3.connect(f'data/users/{msg.author.id}.db')
@@ -921,22 +888,11 @@ async def meme_loop():
             meme_post_objects.append(post)
 
 
-@bot.command()
-@commands.has_permissions(manage_guild=True)
-async def automeme(ctx, channel: discord.TextChannel = None):
-    if channel is None:
-        await ctx.send('BRUH MENTION A CHANNEL!')
-        return
-    avaurl = await bot.user.avatar_url.read()
-    webhook = await channel.create_webhook(name=bot_name + ' Automeme', avatar=avaurl)
-    url = webhook.url
-    meme_webhooks.append(url)
-    pickle.dump(meme_webhooks, open('data/meme_urls.pkl', 'wb'))
-    await ctx.send('aight b, automeme setup!')
+
 
 
 @tasks.loop(minutes=5)
-async def actauthomeme():
+async def actautomeme():
     random_number = random.randint(0, 16777215)
     hex_number = str(hex(random_number))
     ranno = random.randint(0, len(meme_ids))
@@ -958,30 +914,17 @@ async def actauthomeme():
 
 
 meme_loop.start()
-actauthomeme.start()
+actautomeme.start()
 
 
-@bot.command()
-async def meme(ctx):
-    random_number = random.randint(0, 16777215)
-    hex_number = str(hex(random_number))
-    ranno = random.randint(0, len(meme_ids))
-    slice1 = str(meme_image_urrals[ranno])[2:-1]
-    post_obj = meme_post_objects[ranno]
-    embed = discord.Embed(title=post_obj.title, color=int(hex_number, base=16))
-    try:
-        embed.set_image(url=slice1)
-    except IndexError:
+
+
+
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, discord.ext.commands.CommandNotFound):
         return
-    embed.set_footer(text=f'\U00002b06 {post_obj.score} | Api by reddit')
-    await ctx.send(embed=embed)
-
-
-
-
-
-
-
+    await report_error(ctx, error)
 
 
 bot.run(pickle.load(open("credentials.pkl", 'rb'))["discord"])
