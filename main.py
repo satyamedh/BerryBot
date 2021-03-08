@@ -18,7 +18,8 @@ extlist = ['jishaku',
            'Cogs.fun',
            'Cogs.utility',
            'Cogs.server_mgmt',
-           'Cogs.ErrorHandler']
+           'Cogs.ErrorHandler',
+           'Cogs.Hypixel']
 
 
 async def get_prefixes(bot, message):
@@ -42,11 +43,12 @@ except Exception:
     meme_webhooks = []
 
 bot_name = 'BerryBot'
-bot_version = 'beta 3.1(BERRY HAS BEEN REVIVED)'
+bot_version = 'beta 3.2(With hypixel stuff)'
 
 reddit = praw.Reddit(client_id='ecrTQ_N49JRNIw',
                      client_secret=pickle.load(open("credentials.pkl", 'rb'))["reddit"],
-                     user_agent='BRUH')
+                     user_agent='BRUH',
+                     check_for_async=False)
 
 channels = []
 
