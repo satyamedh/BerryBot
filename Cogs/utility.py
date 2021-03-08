@@ -17,7 +17,7 @@ class UtilCog(commands.Cog):
     @commands.command(aliases=['source', 'source-code', 'sourcecode'])
     async def github(self, ctx):
         await ctx.send(
-            'I see, you wanna see the source, okay so 1st promise that you will not misuse the source code, you will have to read this licence: http://bit.ly/gnuafferolicence (yes it is a link shortner, dont worry, no ads, it just counts clicks).')
+            'I see, you wanna see the source, okay so 1st promise that you will not misuse the source code, you will have to read this licence: http://bit.ly/Gnugpl-3-0 (yes it is a link shortner, dont worry, no ads, it just counts clicks).')
         await asyncio.sleep(5)
         await ctx.send(
             'Send this in this channel to promise you wont misuse: `I HEREBY AGREE THAT I WILL NOT MISUSE THE SOURCE CODE`')
