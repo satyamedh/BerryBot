@@ -1,3 +1,5 @@
+import string
+
 import discord
 from discord import Embed
 from random import randint
@@ -5,18 +7,24 @@ import traceback
 import os
 
 
+valid_chars = "-_.() %s%s" % (string.ascii_letters, string.digits)
+
+
 async def report_error(ctx, e: Exception):
     if not os.path.exists('data'):
         os.makedirs('data')
     if not os.path.exists('data/Exceptions'):
         os.makedirs('data/Exceptions')
-    if not os.path.exists(f'data/Exceptions/{e}'):
-        os.makedirs(f'data/Exceptions/{e}')
+    e2 = str(e)
+    e2 = ''.join(c for c in e2 if c in valid_chars)
+    if not os.path.exists(f'data/Exceptions/{e2}'):
+        os.makedirs(f'data/Exceptions/{e2}')
     embed = discord.Embed(
         title='ERRRRROOOOOORR! if you dont a see a "Error reported" message please DM `! ||Satyamedh||#1051` with a screenshot',
-        description=f"{e}")
+        description=f"{e}",
+    color=discord.Color.random())
     await ctx.send(embed=embed)
-    file = open(f'data/Exceptions/{e}/{randint(0,2147483647)}-Found-Out-By-{ctx.author.id}.txt', 'w')
+    file = open(f'data/Exceptions/{e2}/{randint(0,2147483647)}-Found-Out-By-{ctx.author.id}.txt', 'w')
     traceback.print_exc(file=file)
     file.close()
     e = Embed(title="Error Reported!", description="Error has been reported! thanks for finding this bug!", color=discord.Color.random())
