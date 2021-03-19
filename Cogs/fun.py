@@ -5,6 +5,8 @@ import asyncio
 
 import requests
 from discord.ext import commands
+import datetime
+import humanize
 
 from main import meme_webhooks, meme_ids, meme_image_urrals, meme_post_objects
 
@@ -89,6 +91,74 @@ class FunCog(commands.Cog):
         embed.set_footer(text=f'\U00002b06 {post_obj.score} | Api by reddit')
         await ctx.send(embed=embed)
 
+        
+        
+        
+    @commands.command()
+    @commands.has_permissions(manage_messages = True)
+    async def gstart(self,ctx,timing,winners,*,prize):
+      if timing.endswith('s'):
+        seconds = timing[:-1]
+        end_delta = datetime.timedelta(seconds = int(seconds))
+      if timing.endswith('m'):
+        minutes = timing[:-1]
+        end_delta = datetime.timedelta(minutes = int(minutes))
+      elif timing.endswith('h'):
+        hours = timing[:-1]
+        end_delta = datetime.timedelta(hours = int(hours))
+      start = datetime.datetime.now()
+      start_ending_in = start + end_delta
+      start_humanize_ending_in = humanize.naturaltime(start_ending_in)
+      embed = discord.Embed(title = prize, color = discord.Color.from_rgb(0,255,255))
+      embed.description = f"React with 🎉 to enter! \nEnding time: {start_humanize_ending_in} \nHosted by: {ctx.author.mention}"
+      embed.timestamp = start_ending_in
+      embed.set_footer(text = "Giveaway ending:")
+      msg = await ctx.send(embed = embed)
+      msgid = msg.id
+      await msg.add_reaction("🎉")
+      while start_ending_in > datetime.datetime.now():
+        await asyncio.sleep(10)
+        time_left = (start_ending_in - datetime.datetime.now()).total_seconds()
+        time_left_humanize = humanize.precisedelta(time_left)
+        embed = discord.Embed(color = discord.Color.from_rgb(0,255,255))
+        embed.set_author(name = prize)
+        embed.description = f"React with 🎉 to enter! \nEnding time: {time_left_humanize} \nHosted by: {ctx.author.mention}"
+        embed.timestamp = start_ending_in
+        embed.set_footer(text = "Giveaway ending:")
+        await msg.edit(embed = embed)
+      gw_msg = await ctx.channel.fetch_message(msgid)
+      reactions = gw_msg.reactions
+      reaction = reactions[0]
+      raffle = await reaction.users().flatten()
+      raffle.pop(raffle.index(client.user))
+      winner = random.choice(raffle)
+      await ctx.send(f"Congratulations {winner.mention}!, you won **{prize}**!")
+
+
+    @commands.command()
+    async def greroll(self,ctx):
+      async for message in ctx.channel.history(limit = 50):
+        if message.author == client.user:
+          if message.embeds:
+            if message.embeds[0].description.startswith('React with'):
+              gw_msg = message
+            else:
+              continue
+          else:
+            continue
+        else:
+          continue
+      reactions = gw_msg.reactions
+      reaction = reactions[0]
+      raffle = await reaction.users().flatten()
+      raffle.pop(raffle.index(client.user))
+      winner = random.choice(raffle)
+      await ctx.send(f"The new winner is {winner.mention}!, Congratulations!")
+
+     
+    
+    
+    
 def setup(bot):
     bot.add_cog(FunCog(bot))
 
