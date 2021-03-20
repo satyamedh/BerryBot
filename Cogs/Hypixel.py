@@ -12,7 +12,9 @@ class HypixelCog(commands.Cog):
         self.bot = bot
         self.hypixel = asyncpixel.Hypixel(pickle.load(open("credentials.pkl", 'rb'))['hypixel'])
         self.currentBazaar = None
+        self.currentAh = None
         self.Bazaar_Loop.start()
+        self.Auction_loop.start()
         self.bz_id_item = bz_ids.id_name
         self.bz_item_id = bz_ids.name_id
     @commands.command()
@@ -69,7 +71,26 @@ class HypixelCog(commands.Cog):
             formattedbz[item.product_id] = item
 
         self.currentBazaar = formattedbz
-        # print(self.currentBazaar)
+
+    @tasks.loop(seconds=30)
+    async def Auction_loop(self):
+        ah = await self.hypixel.auctions()
+        formattedahpages = []
+        formattedah = []
+        for page in range(ah.total_pages):
+            page = await self.hypixel.auctions(page=page)
+            formattedahpages.append(page)
+        for page in formattedahpages:
+            for auction in page.auctions:
+                formattedah.append(auction)
+
+
+        self.currentAh = formattedah
+
+    @commands.command()
+    async def auction(self, ctx):
+        if self.currentAh is None:
+            await ctx.send("Auction house is refreshing. please wait")
 
 
 def setup(bot):
